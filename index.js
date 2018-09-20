@@ -8,7 +8,23 @@ app.get('/', (req, res) => {
     res.send('Testing GraphQL');
 })
 
-const root = { hello: () => "Hi! I am Arvin." }
+class Account {
+    constructor(id, { balance, availableBalance }){
+        this.id = id;
+        this.balance = balance;
+        this.availableBalance = availableBalance;
+    }
+}
+
+const accountDatabase = {};
+
+const root = { 
+    createAccount: ({input}) => {
+        let id = require('crypto').randomBytes(10).toString('hex');
+        accountDatabase[id] = input;
+        return new Account(id, input);
+    }
+};
 
 app.use('/graphql', graphqlHTTP({
     schema: schema,
